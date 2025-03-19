@@ -83,6 +83,10 @@ impl GetOptions {
             serializer.append_pair("waitIndex", &wait_index.to_string());
         }
 
+        if self.strong_consistency {
+            serializer.append_pair("quorum", bool_to_str(true));
+        }
+
         serializer.finish()
     }
 }

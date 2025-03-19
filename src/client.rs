@@ -2,16 +2,17 @@
 
 use std::{future::Future, sync::Arc, time::Duration};
 
+use base64::{prelude::BASE64_STANDARD, Engine};
 use http::{
     header::{HeaderMap, HeaderValue},
     StatusCode, Uri,
 };
-use log::error;
-use rand::{prelude::SliceRandom, thread_rng};
+use rand::{prelude::SliceRandom, rng};
 use reqwest::{Certificate, Identity, IntoUrl};
 use serde::de::DeserializeOwned;
 use serde_derive::{Deserialize, Serialize};
 use serde_json;
+use tracing::error;
 
 use crate::{
     error::{ApiError, Error},
@@ -156,7 +157,8 @@ impl ClientBuilder {
         let client_builder = match self.basic_auth {
             Some(auth) => {
                 let mut headers = HeaderMap::new();
-                let basic_auth = base64::encode(format!("{}:{}", auth.username, auth.password));
+                let basic_auth =
+                    BASE64_STANDARD.encode(format!("{}:{}", auth.username, auth.password));
                 headers.insert(
                     reqwest::header::AUTHORIZATION,
                     HeaderValue::from_str(&format!("Basic {}", basic_auth))
@@ -234,7 +236,7 @@ impl Client {
     fn shuffled_endpoints(&self) -> Vec<&Uri> {
         // Shallow copy the endpoints, so we can shuffle them.
         let mut endpoints: Vec<&Uri> = self.endpoints.iter().collect();
-        let mut rng = thread_rng();
+        let mut rng = rng();
         endpoints.shuffle(&mut rng);
         endpoints
     }
