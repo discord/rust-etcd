@@ -67,10 +67,10 @@ impl Display for Error {
         match *self {
             Error::Api(ref error) => write!(f, "{}", error),
             Error::Http(ref error) => write!(f, "{}", error),
-            Error::InvalidConditions => write!(f, "Invalid conditions"),
+            Error::InvalidConditions => write!(f, "current value or modified index is required"),
             Error::InvalidUri(ref error) => write!(f, "{}", error),
             Error::InvalidUrl(ref error) => write!(f, "{}", error),
-            Error::NoEndpoints => write!(f, "No endpoints"),
+            Error::NoEndpoints => write!(f, "at least one endpoint is required to create a Client"),
             Error::Serialization(ref error) => write!(f, "{}", error),
             Error::UnexpectedStatus(ref status) => write!(
                 f,
