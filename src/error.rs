@@ -4,7 +4,8 @@ use std::convert::From;
 use std::error::Error as StdError;
 use std::fmt::{Display, Error as FmtError, Formatter};
 
-use http::{uri::InvalidUri, StatusCode};
+use http::uri::InvalidUri;
+use http::StatusCode;
 use serde_derive::{Deserialize, Serialize};
 use serde_json::Error as SerializationError;
 use tokio::time::error::Elapsed;
@@ -66,10 +67,10 @@ impl Display for Error {
         match *self {
             Error::Api(ref error) => write!(f, "{}", error),
             Error::Http(ref error) => write!(f, "{}", error),
-            ref error @ Error::InvalidConditions => write!(f, "{}", error.to_string()),
+            Error::InvalidConditions => write!(f, "Invalid conditions"),
             Error::InvalidUri(ref error) => write!(f, "{}", error),
             Error::InvalidUrl(ref error) => write!(f, "{}", error),
-            ref error @ Error::NoEndpoints => write!(f, "{}", error.to_string()),
+            Error::NoEndpoints => write!(f, "No endpoints"),
             Error::Serialization(ref error) => write!(f, "{}", error),
             Error::UnexpectedStatus(ref status) => write!(
                 f,
